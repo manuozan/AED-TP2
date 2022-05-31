@@ -1,5 +1,6 @@
 from random import *
 from os import system
+from turtle import clear
 system("cls")
 
 # VARIABLES GLOBALES
@@ -8,7 +9,7 @@ numeros = (2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q', 'A')
 contManos = 0
 contCartasManoJugador = contCartasManoCroupier = 0
 sumaUsuario = sumaCrupier = 0
-porc_victoria = 0
+porc_victoria = 0 
 racha_usuario = 0
 contBlackjackNatural = 0 # va a ser usado en punto 3 y tiene la cantidad blackjack natural
 #Punto 3
@@ -52,6 +53,7 @@ while True:
         contManos += 1
         sumaJugador = 0
         sumaUsuario = 0
+        sumaCrupier = 0
         
         # Realizar apuesta
         apuesta = int(input(f'{nombreUsuario}, el pozo es de ${str(pozoUsuario)}.\
@@ -124,6 +126,7 @@ while True:
                         else:
                             flagSacarCarta = False
                             print((f' ERROR: Seleccione una opción válida.').center(50,"*"))
+                            break
                 # Turno del Croupier
                 elif flagJuegaCroupier:
                     if flagSacarCarta and sumaCrupier < 17:
@@ -144,9 +147,9 @@ while True:
                         
             # Determinación de ganador          
             if (sumaCrupier < sumaUsuario <= 21) or (sumaCrupier > 21 >= sumaUsuario):
-                resultado = "El usuario gana"
+                resultado = f"{nombreUsuario} gana"
                 # Si el usuario gana recibe el doble de la apuesta
-                pozoUsuario += apuesta*2
+                pozoUsuario += apuesta*2 - apuesta
                 
             elif (sumaUsuario < sumaCrupier <= 21) or (sumaUsuario > 21 >= sumaCrupier):
                 resultado = "La casa gana"
@@ -166,12 +169,13 @@ while True:
             print((f' RESULTADOS FINALES ').center(50,"*"))
             print()
             print('Monto de la apuesta: ',apuesta) 
-            print('Puntaje Jugador: ',sumaUsuario) 
+            print(f'Puntaje {nombreUsuario}: ',sumaUsuario) 
             print('Puntaje Croupier: ',sumaCrupier) 
             print(f'El resultado es: {resultado}')
             print(f'El total restante en el pozo es de: $ {pozoUsuario}')
-
-     
+                        
+   
+    
     elif opcion == "3": 
         sumaUsuario = 0
         break
