@@ -1,18 +1,20 @@
+
 from random import *
 from os import system
-from turtle import clear
+
 system("cls")
 
 # VARIABLES GLOBALES
 palos = ('♠', '🖤', '🍀', '💎')
-numeros = (2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q', 'A')
+#numeros = (2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q', 'A')
+numeros = (10, 'A')
 contManos = 0
 contCartasManoJugador = contCartasManoCroupier = 0
 sumaUsuario = sumaCrupier = 0
-porc_victoria = 0 
-racha_usuario = 0
-contBlackjackNatural = 0 # va a ser usado en punto 3 y tiene la cantidad blackjack natural
 #Punto 3
+porc_victoria = 0 
+rachaUsuario = 0
+contBlackjackNatural = 0 # va a ser usado en punto 3 y tiene la cantidad blackjack natural
 montoMaximo = 0
 monto_promedio = 0
 perdida_max = 0
@@ -109,6 +111,9 @@ while True:
                         # Opción para seleccionar más cartas usuario (SIEMPRE QUE NO SUPERE LOS 21)
                         if sumaUsuario < 21:
                             otraCarta = int(input(f'{nombreUsuario}: Desea otra carta?\n{1}->SI\n{2}->NO\n'))
+                        elif sumaUsuario == 21:
+                            print('blackjack natural')
+                            contBlackjackNatural += 1    
                         else:
                             otraCarta = 0
                         # Si desea sacar otra carta   
@@ -148,8 +153,9 @@ while True:
             # Determinación de ganador          
             if (sumaCrupier < sumaUsuario <= 21) or (sumaCrupier > 21 >= sumaUsuario):
                 resultado = f"{nombreUsuario} gana"
-                # Si el usuario gana recibe el doble de la apuesta
+                # Si el usuario gana recibe el doble de la apuesta y sumamos una victoria al contador
                 pozoUsuario += apuesta*2 - apuesta
+                rachaUsuario += 1
                 
             elif (sumaUsuario < sumaCrupier <= 21) or (sumaUsuario > 21 >= sumaCrupier):
                 resultado = "La casa gana"
@@ -163,8 +169,8 @@ while True:
                 # Si ambos pierden
                 pozoUsuario -= apuesta
             #Reiniciamos el valor de la apuesta
-            apuesta = 0 
-          
+            #apuesta = 0 
+            
             
             print((f' RESULTADOS FINALES ').center(50,"*"))
             print()
@@ -177,7 +183,11 @@ while True:
    
     
     elif opcion == "3": 
-        sumaUsuario = 0
+        porc_victoria = rachaUsuario / contManos * 100
+        print(f'manos jugadas: {contManos}')
+        print(f'racha del jugador: {rachaUsuario}')
+        print(f'porcentaje de victorias: {porc_victoria}%')
+        print(f'cantidad de manos con blackjack nautral: {contBlackjackNatural}')
         break
         
     else:
