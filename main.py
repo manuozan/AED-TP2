@@ -1,4 +1,3 @@
-
 from random import *
 from os import system
 
@@ -6,15 +5,16 @@ system("cls")
 
 # VARIABLES GLOBALES
 palos = ('♠', '🖤', '🍀', '💎')
-#numeros = (2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q', 'A')
-numeros = (10, 'A')
+numeros = (2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'K', 'Q', 'A')
+#numeros = (10, 'A')
 contManos = 0
 contCartasManoJugador = contCartasManoCroupier = 0
 sumaUsuario = sumaCrupier = 0
 #Punto 3
 porc_victoria = 0 
 rachaUsuario = 0
-contBlackjackNatural = 0 # va a ser usado en punto 3 y tiene la cantidad blackjack natural
+rachaCrupier = 0
+contBlackjackNatural = 0 
 montoMaximo = 0
 monto_promedio = 0
 perdida_max = 0
@@ -22,20 +22,22 @@ nombreUsuario = input("Ingrese su nombre: ").upper()
 pozoUsuario = -1
 
 # Validar que el pozo sea válido
-while 100000 <= pozoUsuario or pozoUsuario <= 0:
+while 100000 < pozoUsuario or pozoUsuario <= 0:
     pozoUsuario = int(input("Ingrese el monto del pozo (entre 0 y 100000):\n"))
-    if 100000 <= pozoUsuario or pozoUsuario <= 0:
+    if 100000 < pozoUsuario or pozoUsuario <= 0:
         system("cls")
         print((" ERROR: Pozo inválido ").center(50, "~"))
-        
+
+print((f'=').center(50,"="))    
 print((f'- BIENVENIDO {nombreUsuario} -').center(50," "))
-while True:
-     
+print((f'=').center(50,"="))        
+
+while True:  
     # Menu de opciones
     print((" MENU DE OPCIONES ").center(50, "*"))
     # print(" {1} Agregar al pozo\n {2} Jugar una mano\n {3} Salir")  
     # Selección de opción menu       
-    opcion = input('{1} Agregar al pozo\n{2} Jugar una mano\n{3} Salir\nIngrese su opcion:\n')
+    opcion = input('{1} Agregar al pozo\n{2} Jugar una mano\n{3} Salir\nIngrese su opción:\n')
     #Opcion Apostar
     if opcion == "1":
         print((" AGREGAR AL POZO ").center(50, "*"))
@@ -43,17 +45,17 @@ while True:
         print("Pozo previo: ", pozoUsuario, "\n")
         #Aumento del pozo
         addPozo = int(input('Ingrese el dinero que quiere agregar al pozo: \n'))
-        if addPozo > 0:
+        if addPozo > 0 and (pozoUsuario + addPozo) <= 100000:
             pozoUsuario += addPozo 
             print('El monto actualizado del pozo es de:', pozoUsuario, 'pesos')
         #VALIDACION: Aumento del pozo, si no es correcto (ir a menu)
         else:
             print(('ERROR... El monto de aumento del pozo es inválido').center(50,"*"))
-            continue
+            # continue
     # Opcion Jugar una mano
     elif opcion == "2":
         contManos += 1
-        sumaJugador = 0
+        #sumaJugador = 0
         sumaUsuario = 0
         sumaCrupier = 0
         
@@ -97,6 +99,10 @@ while True:
                         sumaJugador = sumaUsuario
                         # Luego de jugar dos cartas le toca jugar al croupier
                         if contCartasManoJugador == 2:
+                            if sumaUsuario == 21:
+                                print('blackjack natural')
+                                contBlackjackNatural += 1  
+                                # aca hay revisarlo 
                             flagJuegaCroupier = True      
                             flagJuegaUsuario = False     
                         continue
@@ -110,10 +116,9 @@ while True:
                             
                         # Opción para seleccionar más cartas usuario (SIEMPRE QUE NO SUPERE LOS 21)
                         if sumaUsuario < 21:
+                            print((f' TURNO {nombreUsuario} ').center(50,"*"))
                             otraCarta = int(input(f'{nombreUsuario}: Desea otra carta?\n{1}->SI\n{2}->NO\n'))
-                        elif sumaUsuario == 21:
-                            print('blackjack natural')
-                            contBlackjackNatural += 1    
+                          
                         else:
                             otraCarta = 0
                         # Si desea sacar otra carta   
@@ -127,11 +132,17 @@ while True:
                             flagJuegaCroupier = True
                             flagSacarCarta = True
                             sumaJugador = sumaCrupier
-                            print((f' FIN MANO {nombreUsuario}').center(50,"*"))
+                            print((f' TURNO CRUPIER ').center(50,"*"))
+                        elif otraCarta == 0:
+                            flagSacarCarta = False
+                            flagJuegaCroupier = True
+                            flagJuegaUsuario = False
+                            sumaJugador = 0
+
                         else:
                             flagSacarCarta = False
                             print((f' ERROR: Seleccione una opción válida.').center(50,"*"))
-                            break
+                            #break
                 # Turno del Croupier
                 elif flagJuegaCroupier:
                     if flagSacarCarta and sumaCrupier < 17:
@@ -146,7 +157,7 @@ while True:
                             flagSacarCarta = False
                             sumaJugador = sumaJugador
                     else:
-                        print((f' FIN MANO CROUPIER').center(50,"*"))
+                        #print((f' FIN TURNO CRUPIER ').center(50,"*"))
                         flagJuegaCroupier = False
                         flagSacarCarta = False
                         
@@ -159,8 +170,14 @@ while True:
                 
             elif (sumaUsuario < sumaCrupier <= 21) or (sumaUsuario > 21 >= sumaCrupier):
                 resultado = "La casa gana"
-                # Si la casa gana se resta apuesta del pozo
+                # Si la casa gana se resta apuesta del pozo y sumamos una victoria al contador
                 pozoUsuario -= apuesta
+                rachaCrupier += 1
+                
+                # maxima perdida (La apuesta siempre sera mayor que cero)
+                if perdida_max < apuesta:
+                    perdida_max = apuesta
+                
             elif sumaUsuario == sumaCrupier and sumaUsuario <= 21:
                 resultado = "Hay empate"
                 # Si hay empate el pozo queda tal cual
@@ -168,29 +185,44 @@ while True:
                 resultado = "Ambos pierden"
                 # Si ambos pierden
                 pozoUsuario -= apuesta
-            #Reiniciamos el valor de la apuesta
-            #apuesta = 0 
+
+            #monto maximo que llegó a tener el jugador   
+            if montoMaximo < pozoUsuario:
+              montoMaximo = pozoUsuario
             
-            
-            print((f' RESULTADOS FINALES ').center(50,"*"))
             print()
-            print('Monto de la apuesta: ',apuesta) 
+            print((f'=').center(50,"="))    
+            print((f'{resultado.upper()}').center(50," ")) 
+            print((f'=').center(50,"="))   
             print(f'Puntaje {nombreUsuario}: ',sumaUsuario) 
             print('Puntaje Croupier: ',sumaCrupier) 
-            print(f'El resultado es: {resultado}')
-            print(f'El total restante en el pozo es de: $ {pozoUsuario}')
-                        
-   
-    
+            print('Monto de la apuesta: $',apuesta) 
+            #print(f'El resultado es: {resultado.upper()}')
+            print(f'El pozo actualizado es de: $ {pozoUsuario}')
+            print()
+            #Reiniciamos el valor de la apuesta            
+            apuesta = 0 
+    # Opcion Salir
     elif opcion == "3": 
-        porc_victoria = rachaUsuario / contManos * 100
-        print(f'manos jugadas: {contManos}')
-        print(f'racha del jugador: {rachaUsuario}')
-        print(f'porcentaje de victorias: {porc_victoria}%')
-        print(f'cantidad de manos con blackjack nautral: {contBlackjackNatural}')
+        # validar division por cero
+        if contManos > 0:
+            porc_victoria = rachaUsuario / contManos * 100
+        else:
+            porc_victoria = 0
+        print((f' RESUMEN ').center(50,"="))    
+        print(f'Manos jugadas: {contManos}')
+        #print(f'Racha del jugador: {rachaUsuario}')
+        print(f'Porcentaje de victorias: {round(porc_victoria,2)}%')
+        print(f'Cantidad de manos con blackjack nautral: {contBlackjackNatural}')
+        print(f'Pérdida máxima: ${perdida_max}')
+        print(f'Monto max del jugador en el pozo: ${montoMaximo}')
+        print(f'Racha del crupier: {rachaCrupier}')
         break
         
     else:
         system("cls")
-        print((" ERROR: Opcion inválida ").center(50,"*"))
+        print((" ERROR: Opción inválida ").center(50,"*"))
         continue
+print((f'=').center(50,"="))    
+print((f'FIN DEL JUEGO').center(50," ")) 
+print((f'=').center(50,"="))    
