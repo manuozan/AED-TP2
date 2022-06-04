@@ -215,7 +215,6 @@ while True:
             montoPromedio = acumuladorPozo // (contManos + 1)
         else:
             porc_victoria = 0
-            perdidaMax = acumuladorPozo
             montoPromedio = acumuladorPozo
             pozoMax = acumuladorPozo
 
