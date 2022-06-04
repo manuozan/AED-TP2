@@ -210,16 +210,6 @@ while True:
     elif opcion == "3": 
         #monto maximo que llegó a tener el jugador
            
-        # if rachaUsuario == 0:
-        #     pozoMax = pozoInicial
-        # else:
-        #     if pozoMax < pozoUsuario:
-        #         pozoMax = pozoUsuario
-
-        #promedioEl monto promedio del que dispuso el jugador para realizar apuestas
-        
-        # validar division por cero para los porcentajes de victoria
-        # el jugador pierde todo el pozo si sale sin jugar
         if contManos > 0:
             porc_victoria = rachaUsuario / contManos * 100
             montoPromedio = acumuladorPozo // (contManos + 1)
